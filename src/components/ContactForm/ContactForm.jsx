@@ -1,10 +1,12 @@
-import styles from "./ContactForm.module.css";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Form, Field, ErrorMessage, Formik } from "formik";
 import * as Yup from "yup";
-import { nanoid } from "nanoid";
-import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { addContact } from "../../redux/contactsSlice";
+import styles from "./ContactForm.module.css";
 
-const ContactForm = ({ addContact }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, "Must be at least 3 characters")
@@ -18,8 +20,7 @@ const ContactForm = ({ addContact }) => {
   });
 
   const handleSubmit = (values, { resetForm }) => {
-    const newContact = { id: nanoid(), ...values };
-    addContact(newContact);
+    dispatch(addContact(values.name, values.number));
     resetForm();
   };
 
@@ -59,10 +60,6 @@ const ContactForm = ({ addContact }) => {
       </Form>
     </Formik>
   );
-};
-
-ContactForm.propTypes = {
-  addContact: PropTypes.func.isRequired,
 };
 
 export default ContactForm;
